@@ -12,8 +12,9 @@ function App() {
   
   const fetchEvents = async () => {
     const data = await axios.get(`${baseUrl}/events`)
-    const { events } = data.data
-    
+    console.log(data)
+    const { event } = data.data
+    setEventsList(event)
   }
   
   const handleChange = e => {
@@ -31,7 +32,7 @@ function App() {
   
   return (
     <div className="App">
-      <header className="App-header">
+      <section>
         <form onSubmit={handleSubmit}>
           <label htmlFor="description">Description</label>
           <input
@@ -43,7 +44,16 @@ function App() {
           />
           <button type="submit">Submit</button>
         </form>
-      </header>
+      </section>
+      <section>
+        <ul>
+          {eventsList.map(event => {
+            return (
+              <li key={event.id}>{event.description}</li>
+              )
+            })}
+        </ul>
+      </section>
     </div>
   );
 }
