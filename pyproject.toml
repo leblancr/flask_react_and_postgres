@@ -12,6 +12,7 @@ psycopg2 = "^2.9.6"
 postgres = "^4.0"
 flask-sqlalchemy = "^3.0.3"
 flask = "^2.2.3"
+axios = "^0.3.0"
 
 
 [build-system]
