@@ -26,11 +26,6 @@ baby-tracker=# GRANT ALL PRIVILEGES ON DATABASE "baby-tracker" to rich;
 baby-tracker=# \conninfo
 You are connected to database "baby-tracker" as user "rich" via socket in "/var/run/postgresql" at port "5432".
 
-github token
-black - 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
-new1  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
-
-
 ImportError: cannot import name 'MethodViewType' from 'flask.views'
 reinstalled with  python -m pip install pgadmin4, make sure in venv
 
