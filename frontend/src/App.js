@@ -17,10 +17,18 @@ function App() {
     setEventsList(event)
   }
   
-  const handleChange = e => {
-    setDescription(e.target.value)
+  const handleChange = e => setDescription(e.target.value)
+
+  const handleDelete = async id => {
+    try {
+      await axios.delete(`${baseUrl}/events/${id}`)
+      const updatedList = eventsList.filter(event => event.id !== id)
+      setEventsList(updatedList)
+    } catch (err) {
+      console.error(err.message)
+    }
   }
-  
+
   const handleSubmit = e => {
     e.preventDefault()
     console.log(description)
@@ -49,7 +57,10 @@ function App() {
         <ul>
           {eventsList.map(event => {
             return (
-              <li key={event.id}>{event.description}</li>
+              <li style={{display: "flex"}} key={event.id}>
+                {event.description}
+                <button onClick={() => handleDelete(event.id)}>x</button>
+              </li>
               )
             })}
         </ul>
