@@ -36,7 +36,7 @@ def hello():
 
 
 # create an event
-@app.route('/event', methods=['POST'])
+@app.route('/events', methods=['POST'])
 def create_event():
     description = request.json['description']
     event = Event(description)
@@ -46,23 +46,24 @@ def create_event():
 
 
 # get all event
-@app.route('/events', methods=['Get'])
+@app.route('/events', methods=['GET'])
 def get_events():
     events = Event.query.order_by(Event.id.asc()).all()
     event_list = []
     for event in events:
         event_list.append(format_event(event))
-    return {"event": event_list}
+    return {"events": event_list}
         
+
 # get one event
-@app.route('/event/<event_id>', methods=['Get'])
+@app.route('/events/<event_id>', methods=['GET'])
 def get_event(event_id):
     event = Event.query.filter_by(id=event_id).one()
     return {'event': format_event(event)}
     
     
 # delete event
-@app.route('/event/<event_id>', methods=['DELETE'])
+@app.route('/events/<event_id>', methods=['DELETE'])
 def delete_event(event_id):
     event = Event.query.filter_by(id=event_id).one()
     db.session.delete(event)
@@ -71,7 +72,7 @@ def delete_event(event_id):
 
 
 # edit event
-@app.route('/event/<event_id>', methods=['PUT'])
+@app.route('/events/<event_id>', methods=['PUT'])
 def update_event(event_id):
     event = Event.query.filter_by(id=event_id)
     description = request.json['description']
