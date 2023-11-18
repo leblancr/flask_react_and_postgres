@@ -4,10 +4,11 @@ from datetime import datetime
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rich:admin@localhost/baby-tracker'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rich:admin@localhost/baby-tracker'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rich:reddpos@localhost/baby-tracker'  # must use '%40' to replace @ sign
 db = SQLAlchemy(app)
 # db.init_app(app)  # first time only
-CORS(app)
+CORS(app)  #
 
 
 class Event(db.Model):
@@ -20,6 +21,10 @@ class Event(db.Model):
     
     def __init__(self, description):
         self.description = description
+        
+    # run just once to create event table
+    # with app.app_context():
+    #     db.create_all()
         
         
 def format_event(event):
@@ -42,7 +47,12 @@ def create_event():
     event = Event(description)
     db.session.add(event)
     db.session.commit()
-    return format_event(event)
+    # return format_event(event)
+    return {
+        "description": event.description,
+        "id": event.id,
+        "created_at": event.created_at
+    }
 
 
 # get all event
@@ -71,7 +81,7 @@ def delete_event(event_id):
     return f"Event: (id: {id}) deleted"
 
 
-# edit event
+# edit event (update)
 @app.route('/events/<event_id>', methods=['PUT'])
 def update_event(event_id):
     event = Event.query.filter_by(id=event_id)
