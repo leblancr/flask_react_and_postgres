@@ -9,7 +9,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 In the project directory, you can run:
 
 cd frontend
-### `npm start`
+# npm start
 
 sh: line 1: react-scripts: command not found
 $ npm install react-scripts

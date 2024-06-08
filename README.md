@@ -7,25 +7,41 @@ youtube - Full Stack Flask, React, and Postgres, pt. 1
 
 
 1. set up system:
-<!-- pyenv local 3.10.10 -->
-<!-- pyenv virtualenv 3.10.10 flask_react_and_postgres - just first time to create venv -->
-<!-- pyenv activate flask_react_and_postgres -->
-<!-- export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring -->
-<!-- python -m keyring --disable -->
+gentoo:
+sudo emerge --ask dev-db/postgresql
+sudo passwd postgres  # set it to 'postgres'
+sudo chown -R postgres:postgres /var/lib/postgresql/16  
+sudo chown -R postgres:postgres /var/lib/postgresql/data
+# sudo mv /var/lib/postgresql/16/data/pg*.conf /etc/postgresql-16/ - didn't work for some reason
+sudo mv /var/lib/postgresql/16/data/postgresql.conf /etc/postgresql-16/
+sudo mv /var/lib/postgresql/16/data/pg_hba.conf /etc/postgresql-16/
+sudo mv /var/lib/postgresql/16/data/pg_ident.conf /etc/postgresql-16/
+sudo -u postgres initdb -D /var/lib/postgresql/16/data     
 
+# This command will give full access to the directory to the owner
+# (rich in this case) and no access to others.
+# Add the user rich to the postgres group:
+sudo usermod -aG postgres rich
+
+Initialize the Database:
+After installation, you need to initialize the database cluster. 
+This is typically done using the initdb command. Run:
+sudo su - postgres - enter users creds
+initdb --locale=en_US.UTF-8 -D '/var/lib/postgresql/data'
 poetry install
 poetry shell for virtual environment
+may need to update some dependencies if it's been a while.
 
 systems:
 sudo service postgresql start - to start postgres service
 service postgresql status
 
 OpenRC gentoo, if not started automaticlly at startup:
-sudo /etc/init.d/postgresql-15 start
+sudo /etc/init.d/postgresql-16 start
 * /run/postgresql: creating directory
 * /run/postgresql: correcting owner
-* Starting PostgreSQL 15 ...
-sudo /etc/init.d/postgresql-15 stop
+* Starting PostgreSQL 16 ...
+sudo /etc/init.d/postgresql-16 stop
 
 2. get user to be able to log into database using psql
 sudo pg_isready
@@ -43,10 +59,29 @@ baby-tracker=# GRANT ALL PRIVILEGES ON DATABASE "baby-tracker" to rich;
 baby-tracker=# \conninfo
 You are connected to database "baby-tracker" as user "rich" via socket in "/var/run/postgresql" at port "5432".
 
-to start: /flask_react_and_postgres/backend/ python -m flask run
+Restoring database on a new system from backup.sql:
+psql -U postgres -d postgres -h localhost                                2 ↵ ──(Fri,Jun07)─┘
+psql (16.3)
+Type "help" for help.
+
+postgres=# CREATE DATABASE baby_tracker;
+You are now connected to database "baby_tracker" as user "postgres".
+baby_tracker-# psql -U postgres -d baby_tracker -h localhost -f backup.sql
+baby_tracker-# \q
+psql -U postgres -d baby_tracker -h localhost -f backup.sql
+
+to run dbeaver type ./dbeaver in the extracted directory in a terminal 
+/opt/dbeaver/dbeaver
+in dbeaver create new connection for rich besides the postgres one
+
+to start backend: /flask_react_and_postgres/backend/ python -m flask run
+to start frontend: /flask_react_and_postgres/backend/ npm start
+    there's a README.md in the frontend directory
 to run pgadmin4 type it in a terminal - rkba001 Q223@
 /home/rich/.pyenv/versions/3.10.10/envs/flask_react_and_postgres/lib/python3.10/site-packages/
 nano my_env/lib/python3.10/site-packages/pgadmin4/config_local.py
+
+
 
 3. create Event table by: db.create_all()
 # run just once to create event table in Event class
