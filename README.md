@@ -3,7 +3,7 @@ youtube - Full Stack Flask, React, and Postgres, pt. 1
 1. set up system
 2. get user to be able to log into database using psql
 3. create Event table by: db.create_all()
-4. send get reuest to http://localhost:5000/events using postman.
+4. send get request to http://localhost:5000/events using postman.
 
 
 1. set up system:
@@ -33,6 +33,7 @@ poetry shell for virtual environment
 may need to update some dependencies if it's been a while.
 
 systems:
+freebsd
 sudo service postgresql start - to start postgres service
 service postgresql status
 
@@ -70,25 +71,43 @@ baby_tracker-# psql -U postgres -d baby_tracker -h localhost -f backup.sql
 baby_tracker-# \q
 psql -U postgres -d baby_tracker -h localhost -f backup.sql
 
-to run dbeaver type ./dbeaver in the extracted directory in a terminal 
-/opt/dbeaver/dbeaver
-in dbeaver create new connection for rich besides the postgres one
-
-to start backend: /flask_react_and_postgres/backend/ python -m flask run
-to start frontend: /flask_react_and_postgres/backend/ npm start
-    there's a README.md in the frontend directory
-to run pgadmin4 type it in a terminal - rkba001 Q223@
-/home/rich/.pyenv/versions/3.10.10/envs/flask_react_and_postgres/lib/python3.10/site-packages/
-nano my_env/lib/python3.10/site-packages/pgadmin4/config_local.py
-
-
-
 3. create Event table by: db.create_all()
 # run just once to create event table in Event class
 # with app.app_context():
 #     db.create_all()
 
-Errors:
+4. 
+
+Starting after setup:
+1. Start database - Postgres
+Gentoo: 
+sudo pg_isready
+sudo /etc/init.d/postgresql-16 start
+to run dbeaver type ./dbeaver in the extracted directory in a terminal 
+/opt/dbeaver/dbeaver
+in dbeaver create new connection for rich besides the postgres one
+
+FreeBSD:
+to run pgadmin4 type it in a terminal - rkba001 Q223@
+
+2. Start backend:
+cd /flask_react_and_postgres/backend/
+poetry shell
+python -m flask run
+
+3. Start frontend:
+cd /flask_react_and_postgres/frontend
+npm start
+
+there's a README.md in the frontend directory
+/home/rich/.pyenv/versions/3.10.10/envs/flask_react_and_postgres/lib/python3.10/site-packages/
+nano my_env/lib/python3.10/site-packages/pgadmin4/config_local.py
+
+Troubleshooting:
+Postgres:
+/run/postgresql:5432 - no response
+rc-service postgresql status
+
 ImportError: cannot import name 'MethodViewType' from 'flask.views'
 reinstalled with  python -m pip install pgadmin4, make sure in venv
 
