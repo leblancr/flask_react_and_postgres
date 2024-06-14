@@ -7,6 +7,20 @@ youtube - Full Stack Flask, React, and Postgres, pt. 1
 
 
 1. set up system:
+arch:
+sudo su - postgres -c "initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'"
+You can now start the database server using:
+pg_ctl -D /var/lib/postgres/data -l logfile start
+sudo chown -R postgres:postgres /var/lib/postgres/data
+sudo mkdir -p /run/postgresql
+sudo chown -R postgres:postgres /run/postgresql
+sudo -u postgres pg_ctl -D /var/lib/postgres/data -l /var/log/postgres/postgresql.log start
+systemctl status postgresql
+sudo git clone https://aur.archlinux.org/dbeaver.git
+
+Restore databases from existing backup.sql:
+psql -U postgres -f backup.sql
+
 gentoo:
 sudo emerge --ask dev-db/postgresql
 sudo passwd postgres  # set it to 'postgres'
@@ -48,9 +62,11 @@ sudo /etc/init.d/postgresql-16 stop
 sudo pg_isready
 sudo -u postgres psql - login to postgres using the default postgres role. password = ?
 gets to the postgres=# prompt, then...
-CREATE DATABASE database;
-GRANT ALL PRIVILEGES ON DATABASE database to rich;
-ALTER USER rich WITH SUPERUSER;
+postgres=# CREATE ROLE rich;
+postgres=# ALTER USER rich WITH SUPERUSER;
+postgres=# CREATE DATABASE database;
+postgres=# GRANT ALL PRIVILEGES ON DATABASE database to rich;
+postgres=# ALTER USER rich WITH SUPERUSER;
 
 Password for user postgres: r***pos, rich: r***pos
 psql -U rich -d baby-tracker - logs rich into database baby-tracker
@@ -66,10 +82,10 @@ psql (16.3)
 Type "help" for help.
 
 postgres=# CREATE DATABASE baby_tracker;
-You are now connected to database "baby_tracker" as user "postgres".
-baby_tracker-# psql -U postgres -d baby_tracker -h localhost -f backup.sql
-baby_tracker-# \q
-psql -U postgres -d baby_tracker -h localhost -f backup.sql
+You are now connected to database "baby-tracker" as user "postgres".
+baby-tracker-# psql -U postgres -d baby-tracker -h localhost -f backup.sql
+baby-tracker-# \q
+psql -U postgres -d baby-tracker -h localhost -f backup.sql
 
 3. create Event table by: db.create_all()
 # run just once to create event table in Event class
@@ -80,6 +96,10 @@ psql -U postgres -d baby_tracker -h localhost -f backup.sql
 
 Starting after setup:
 1. Start database - Postgres
+Arch:
+sudo -u postgres pg_ctl -D /var/lib/postgres/data -l /var/log/postgres/postgresql.log start
+systemctl status postgresql
+
 Gentoo: 
 sudo pg_isready
 sudo /etc/init.d/postgresql-16 start
@@ -107,6 +127,10 @@ Troubleshooting:
 Postgres:
 /run/postgresql:5432 - no response
 rc-service postgresql status
+
+Dbeaver:
+database doesn't show after restore from backup.sql:
+Need to create a new database connection and call it baby-tracker with rich creds.
 
 ImportError: cannot import name 'MethodViewType' from 'flask.views'
 reinstalled with  python -m pip install pgadmin4, make sure in venv
