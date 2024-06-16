@@ -1,8 +1,10 @@
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 //import {format} from 'date-fns'
-
+import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import InputField from './InputField'; // Import your InputField component
 
 const baseUrl = "http://localhost:5000"
 
@@ -72,19 +74,27 @@ function App() {
   }, [])
   
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: '#000', color: '#fff', minHeight: '100vh' }}>
       <section>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="description">Description</label>
-          <input
-            onChange={e => handleChange(e, 'description')}
-            type="text"
-            name="description"
-            id="description"
-            placeholder="Describe the event"
-            value={description}
-          />
-          <button type="submit">Submit</button>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <label htmlFor="description" style={{ marginBottom: '10px' }}>Description:</label>
+          <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: '10px' }}>
+            {/*<input*/}
+            {/*  onChange={e => handleChange(e, 'description')}*/}
+            {/*  type="text"*/}
+            {/*  name="description"*/}
+            {/*  id="description"*/}
+            {/*  placeholder="Describe the task"*/}
+            {/*  value={description}*/}
+            {/*  style={{ flex: 1, padding: '8px', marginRight: '10px', fontSize: '14px' }}*/}
+            {/*/>*/}
+            <InputField
+              value={description}
+              onChange={(e) => handleChange(e, 'description')}
+              placeholder="Describe the task"
+            />
+            <Button variant="outline-success" type="submit" style={{ minWidth: '80px' }}>Submit</Button>
+          </div>
         </form>
       </section>
       <section>
@@ -93,24 +103,31 @@ function App() {
             if (eventId === event.id){
               return (
                 <li>
-                <form onSubmit={handleSubmit} key={event.id}>
+                <form onSubmit={handleSubmit} key={event.id} style={{ display: "flex", alignItems: "center", flexDirection: "row"  }}>
                   <input
                     onChange={e => handleChange(e, 'edit')}
                     type="text"
                     name="editDescription"
                     id="editDescription"
                     value={editDescription}
+                    style={{ flex: 1, marginRight: '10px' }}
                   />
-                 <button type="submit">Submit</button>
+                  <Button variant="outline-primary" type="submit">Submit</Button>
                 </form>
                 </li>
                 )
             }else {
               return (
-                <li style={{display: "flex"}} key={event.id}>
-                  {event.description}
-                  <button onClick={() => toggleEdit(event)}>Edit</button>
-                  <button onClick={() => handleDelete(event.id)}>x</button>
+                <li className="listItem" key={event.id}>
+                  {/*<button onClick={() => toggleEdit(event)}>Edit</button>*/}
+                  {!editDescription && <Button variant="outline-primary" onClick={() => toggleEdit(event)}>Edit</Button>}
+                  <span style={{ marginLeft: '20px' }}></span>
+                  <Button variant="outline-danger" onClick={() => handleDelete(event.id)}>Delete</Button>
+                  {/*{!eventsList && <Button onClick={() => handleDelete(event.id)}>Delete</Button>}*/}
+                  <span style={{ marginLeft: '20px' }}></span>
+                  <div className="description">
+                    <p style={{ paddingLeft: 0,  paddingTop: '14px', margin: 0 }}>{event.description}</p>
+                  </div>
                 </li>
                 )
             }

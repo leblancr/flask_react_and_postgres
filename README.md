@@ -10,16 +10,27 @@ youtube - Full Stack Flask, React, and Postgres, pt. 1
 arch:
 sudo su - postgres -c "initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'"
 You can now start the database server using:
-pg_ctl -D /var/lib/postgres/data -l logfile start
+sudo pg_ctl -D /var/lib/postgres/data -l logfile start
 sudo chown -R postgres:postgres /var/lib/postgres/data
 sudo mkdir -p /run/postgresql
 sudo chown -R postgres:postgres /run/postgresql
 sudo -u postgres pg_ctl -D /var/lib/postgres/data -l /var/log/postgres/postgresql.log start
 systemctl status postgresql
-sudo git clone https://aur.archlinux.org/dbeaver.git
+2.
+To start postgres automatically:
+sudo systemctl enable postgresql
 
 Restore databases from existing backup.sql:
 psql -U postgres -f backup.sql
+
+sudo git clone https://aur.archlinux.org/dbeaver.git
+type dbeaver ate command line to run.
+
+Frontend:
+sudo pacman -S nodejs npm
+node --version
+npm --version
+frontend/npm install
 
 gentoo:
 sudo emerge --ask dev-db/postgresql

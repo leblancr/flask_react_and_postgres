@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -7,9 +7,30 @@
   pointer-events: none;
 }
 
+.listItem {
+  display: flex;
+  align-items: center;
+}
+
+.description {
+  flex: 1;
+}
+
+.description p {
+  padding-top: 10px;
+  padding-bottom: 5px;
+  margin: 0;
+  /* Ensure no padding on the left */
+  padding-left: 0;
+}
+
 input, button {
-  display: block;
+  border: 1px solid #406;
+  display: inline-flex;
+  padding: 4px 12px; /* Adjust padding as needed */
   margin: 8px 0;
+  min-width: 40px; /* Ensure minimum width for consistency */
+  font-size: 14px; /* Adjust font size as needed */
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -19,7 +40,6 @@ input, button {
 }
 
 section {
-  background-color: #000000;  /* upper section of page */
   display: flex;
   flex-direction: column;
   align-items: center;
