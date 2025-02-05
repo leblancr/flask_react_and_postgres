@@ -31,6 +31,12 @@ function App() {
 
   const handleDelete = async id => {
     try {
+      const confirmed = window.confirm('Are you sure you want to delete this event?');
+
+      if (!confirmed) {
+        return; // If user cancels, do nothing
+      }
+
       await axios.delete(`${baseUrl}/events/${id}`)
       const updatedList = eventsList.filter(event => event.id !== id)
       setEventsList(updatedList)

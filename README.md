@@ -16,8 +16,10 @@ sudo mkdir -p /run/postgresql
 sudo chown -R postgres:postgres /run/postgresql
 sudo -u postgres pg_ctl -D /var/lib/postgres/data -l /var/log/postgres/postgresql.log start
 systemctl status postgresql
-2.
-To start postgres automatically:
+sudo systemctl start mongodb - Arch
+sudo systemctl status mongodb
+
+2. To start postgres automatically:
 sudo systemctl enable postgresql
 
 Restore databases from existing backup.sql:
@@ -107,28 +109,28 @@ psql -U postgres -d baby-tracker -h localhost -f backup.sql
 
 Starting after setup:
 1. Start database - Postgres
-Arch:
-sudo -u postgres pg_ctl -D /var/lib/postgres/data -l /var/log/postgres/postgresql.log start
-systemctl status postgresql
+   Arch:
+   sudo -u postgres pg_ctl -D /var/lib/postgres/data -l /var/log/postgres/postgresql.log start
+   systemctl status postgresql
 
-Gentoo: 
-sudo pg_isready
-sudo /etc/init.d/postgresql-16 start
-to run dbeaver type ./dbeaver in the extracted directory in a terminal 
-/opt/dbeaver/dbeaver
-in dbeaver create new connection for rich besides the postgres one
+   Gentoo:
+   sudo pg_isready
+   sudo /etc/init.d/postgresql-16 start
+   to run dbeaver type ./dbeaver in the extracted directory in a terminal
+   /opt/dbeaver/dbeaver
+   in dbeaver create new connection for rich besides the postgres one
 
-FreeBSD:
-to run pgadmin4 type it in a terminal - rkba001 Q223@
+   FreeBSD:
+   to run pgadmin4 type it in a terminal - rkba001 Q223@
 
 2. Start backend:
-cd /flask_react_and_postgres/backend/
-poetry shell
-python -m flask run
+   cd /flask_react_and_postgres/backend/
+   poetry shell
+   python -m flask run
 
 3. Start frontend:
-cd /flask_react_and_postgres/frontend
-npm start
+   cd /flask_react_and_postgres/frontend
+   npm start
 
 there's a README.md in the frontend directory
 /home/rich/.pyenv/versions/3.10.10/envs/flask_react_and_postgres/lib/python3.10/site-packages/
@@ -180,3 +182,6 @@ connection to server on socket "/run/postgresql/.s.PGSQL.5432" failed:
 FATAL:  password authentication failed for user "rich"
 
 Caused by special character in pass word, '@'. Need to encode, use %40 instead.
+
+mogodb service wont start:
+sudo rm /tmp/mongodb-27017.sock

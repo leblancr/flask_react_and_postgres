@@ -1,14 +1,24 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
+
+# Configure PostgreSQL (SQLAlchemy)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rich:admin@localhost/baby-tracker'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rich:reddpos@localhost/baby-tracker'  # must use '%40' to replace @ sign
 db = SQLAlchemy(app)
 # db.init_app(app)  # first time only
 CORS(app)  #
+
+# Configure MongoDB (Flask-PyMongo)
+# app.config['MONGO_URI'] = 'mongodb://localhost:27017/baby-tracker'
+# app.config['MONGO_URI'] = 'mongodb://rich:reddmon@localhost:27017/baby-tracker'
+app.config['MONGO_URI'] = 'mongodb+srv://rkba1:Hiu55xZe0buUedBd@cluster0.yymy7y6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+
+mongo = PyMongo(app)
 
 
 class Event(db.Model):
@@ -44,25 +54,52 @@ def hello():
 @app.route('/events', methods=['POST'])
 def create_event():
     description = request.json['description']
-    event = Event(description)
-    db.session.add(event)
+
+    # Save to SQLAlchemy (PostgreSQL)
+    event_sql = Event(description)
+    db.session.add(event_sql)
     db.session.commit()
-    # return format_event(event)
-    return {
-        "description": event.description,
-        "id": event.id,
-        "created_at": event.created_at
-    }
+
+    # Save to MongoDB (Flask-PyMongo)
+    events_mongo = mongo.db.events
+    inserted_event = events_mongo.insert_one({
+        "description": description,
+        "created_at": datetime.utcnow()
+    })
+
+    # Return response
+    return jsonify({
+        "description_sql": event_sql.description,
+        "id_sql": event_sql.id,
+        "created_at_sql": event_sql.created_at,
+        "description_mongo": description,
+        "id_mongo": str(inserted_event.inserted_id),  # Convert ObjectId to string
+        "created_at_mongo": datetime.utcnow().isoformat()  # Or use the actual timestamp from MongoDB
+    }), 201
 
 
-# get all event
+# get all events
 @app.route('/events', methods=['GET'])
+@cross_origin(origin='http://localhost:3000', methods=['GET'])
 def get_events():
-    events = Event.query.order_by(Event.id.asc()).all()
-    event_list = []
-    for event in events:
-        event_list.append(format_event(event))
-    return {"events": event_list}
+    # Fetch events from PostgreSQL
+    events_sql = Event.query.order_by(Event.id.asc()).all()
+    event_list_sql = [format_event(event) for event in events_sql]
+
+    # mongo doesnt do CORS
+    # Fetch events from MongoDB
+    #events_mongo = list(mongo.db.events.find())
+    # event_list_mongo = [{
+    #     "description": event['description'],
+    #     "id": str(event['_id']),  # Convert ObjectId to string
+    #     "created_at": event['created_at'].isoformat()  # Convert datetime to ISO format
+    # } for event in events_mongo]
+
+    # Combine both lists
+    combined_event_list = event_list_sql  # + event_list_mongo
+
+    return jsonify({"events": combined_event_list})
+    #return {"events": event_list}
         
 
 # get one event

@@ -31,6 +31,7 @@ input, button {
   margin: 8px 0;
   min-width: 40px; /* Ensure minimum width for consistency */
   font-size: 14px; /* Adjust font size as needed */
+  color: #666; /* Set text color to gray */
 }
 
 @media (prefers-reduced-motion: no-preference) {
