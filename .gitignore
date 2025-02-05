@@ -1,3 +1,4 @@
 .idea/
 *.pyc
 get-pip.py
+node_modules/
